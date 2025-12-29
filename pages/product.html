@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | LuminaBooks</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div style="padding-top: 120px;">
+        <div class="container">
+            <div class="glass-panel"
+                style="padding: 3rem; max-width: 900px; margin: 0 auto; display: flex; gap: 3rem; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px; text-align: center;">
+                    <img id="product-img" src="" alt="Book Cover"
+                        style="width: 100%; max-width: 300px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                </div>
+                <div style="flex: 1; min-width: 300px;">
+                    <h1 id="product-title" style="margin-bottom: 0.5rem;">Loading...</h1>
+                    <h3 id="product-author" style="color: var(--text-muted); font-size: 1.2rem; margin-bottom: 2rem;">
+                    </h3>
+
+                    <p id="product-desc" style="margin-bottom: 2rem; color: #ccc;"></p>
+
+                    <h2 id="product-price" style="color: var(--primary); margin-bottom: 2rem;"></h2>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button id="btn-add-cart" class="glass-button">Add to Cart</button>
+                        <button id="btn-wishlist" class="glass-button secondary">Add to Wishlist</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <button onclick="window.history.back()" class="glass-button secondary">← Back</button>
+            </div>
+        </div>
+    </div>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>
