@@ -59,13 +59,13 @@ const AppState = {
     cart: JSON.parse(localStorage.getItem('bookStore_cart')) || [],
     wishlist: JSON.parse(localStorage.getItem('bookStore_wishlist')) || [],
 
-    save: function() {
+    save: function () {
         localStorage.setItem('bookStore_cart', JSON.stringify(this.cart));
         localStorage.setItem('bookStore_wishlist', JSON.stringify(this.wishlist));
         updateCounters();
     },
 
-    addToCart: function(product) {
+    addToCart: function (product) {
         const existing = this.cart.find(item => item.id === product.id);
         if (existing) {
             existing.quantity += 1;
@@ -76,14 +76,14 @@ const AppState = {
         showNotification(`${product.name} added to cart!`);
     },
 
-    removeFromCart: function(id) {
+    removeFromCart: function (id) {
         this.cart = this.cart.filter(item => item.id !== id);
         this.save();
         // If on cart page, re-render
         if (window.location.pathname.includes('cart.html')) renderCartPage();
     },
-    
-    addToWishlist: function(product) {
+
+    addToWishlist: function (product) {
         if (!this.wishlist.find(item => item.id === product.id)) {
             this.wishlist.push(product);
             this.save();
@@ -95,15 +95,43 @@ const AppState = {
         }
     },
 
-    removeFromWishlist: function(id) {
+    removeFromWishlist: function (id) {
         this.wishlist = this.wishlist.filter(item => item.id !== id);
         this.save();
-         if (window.location.pathname.includes('wishlist.html')) renderWishlistPage();
+        if (window.location.pathname.includes('wishlist.html')) renderWishlistPage();
     }
 };
 
-// Helper: Get Image URL
-const getImageUrl = (id) => `https://loremflickr.com/600/900/book,cover?lock=${id}`;
+// Helper: Get Image URL with stable hash
+const getNumericHash = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash);
+};
+
+// PRE-DEFINED STATIC IMAGES (Guaranteed to never change for the same index)
+const STATIC_BOOK_IMAGES = [
+    "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400&h=600",
+    "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400&h=600",
+    "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=400&h=600",
+    "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&q=80&w=400&h=600",
+    "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&q=80&w=400&h=600",
+    "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=400&h=600",
+    "https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&q=80&w=400&h=600",
+    "https://images.unsplash.com/photo-1535905557558-afc4877a26fc?auto=format&fit=crop&q=80&w=400&h=600",
+    "https://images.unsplash.com/photo-1589519160732-5796a59b3bc5?auto=format&fit=crop&q=80&w=400&h=600",
+    "https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&q=80&w=400&h=600",
+    "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=400&h=600"
+];
+
+const getImageUrl = (id) => {
+    const index = getNumericHash(id) % STATIC_BOOK_IMAGES.length;
+    return STATIC_BOOK_IMAGES[index];
+};
 
 // ==========================================
 // 3. UI INJECTION & UTILS
@@ -112,8 +140,6 @@ function getPathPrefix() {
     // Check if we are in the root or a subfolder
     const path = window.location.pathname;
     // Simple check: if ends with / or index.html, we are root. Else if we are in pages/, we are 1 level deep.
-    // NOTE: This logic might need adjustment based on actual local server path.
-    // For now, assuming pages/*.html structure means we need ../ for root assets
     return path.includes('/pages/') ? '../' : './';
 }
 
@@ -124,7 +150,7 @@ function injectNavbar() {
             <a href="${prefix}index.html" class="brand-logo">Lumina<span style="color:#fff">Books</span>.</a>
             <div class="nav-links">
                 <a href="${prefix}index.html" class="nav-item">Home</a>
-                <a href="#categories" class="nav-item">Categories</a> <!-- Smooth scroll or link to index -->
+                <a href="${prefix}index.html#categories" class="nav-item">Categories</a>
                 <a href="${prefix}pages/wishlist.html" class="nav-item">Wishlist</a>
             </div>
             <div class="nav-icons">
@@ -140,9 +166,13 @@ function injectNavbar() {
     `;
     const navElement = document.createElement('nav');
     navElement.className = 'navbar glass-panel';
+    // Remove existing navbar if any to prevent duplicates on re-injection
+    const existingNav = document.querySelector('.navbar');
+    if (existingNav) existingNav.remove();
+
     document.body.prepend(navElement);
     navElement.innerHTML = navbarHTML;
-    
+
     updateCounters();
 }
 
@@ -186,6 +216,10 @@ function injectFooter() {
     `;
     const footerElement = document.createElement('footer');
     footerElement.className = 'footer';
+    // Remove existing footer if any
+    const existingFooter = document.querySelector('.footer');
+    if (existingFooter) existingFooter.remove();
+
     footerElement.innerHTML = footerHTML;
     document.body.appendChild(footerElement);
 }
@@ -219,11 +253,11 @@ function showNotification(msg) {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     injectNavbar();
-    
+
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
 
-    if (path.endsWith('index.html') || path === '/') {
+    if (path.endsWith('index.html') || path.endsWith('/') || path.endsWith('book_store/')) { // Handle root correctly
         renderLandingPage();
     } else if (path.includes('category.html')) {
         const catKey = params.get('c');
@@ -238,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (path.includes('checkout.html')) {
         // Checkout logic
     }
-    
+
     injectFooter();
 });
 
@@ -253,12 +287,12 @@ function renderLandingPage() {
     const categories = Object.keys(PRODUCTS_DB);
     // category images map (static for design)
     const catImages = {
-        'fiction': 'https://loremflickr.com/400/300/fantasy,book',
-        'non-fiction': 'https://loremflickr.com/400/300/library',
-        'sci-fi': 'https://loremflickr.com/400/300/space,technology',
-        'biography': 'https://loremflickr.com/400/300/portrait,historic',
-        'self-help': 'https://loremflickr.com/400/300/meditation,sunrise',
-        'kids': 'https://loremflickr.com/400/300/cartoon,toys'
+        'fiction': 'https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&q=80&w=400&h=300',
+        'non-fiction': 'https://images.unsplash.com/photo-1550399105-c4db5fb85c18?auto=format&fit=crop&q=80&w=400&h=300',
+        'sci-fi': 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=400&h=300',
+        'biography': 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=400&h=300',
+        'self-help': 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&q=80&w=400&h=300',
+        'kids': 'https://images.unsplash.com/photo-1566438480900-0609be27a4be?auto=format&fit=crop&q=80&w=400&h=300'
     };
 
     grid.innerHTML = categories.map(cat => `
@@ -272,9 +306,9 @@ function renderLandingPage() {
 function renderCategoryPage(catKey) {
     const container = document.getElementById('category-products');
     const title = document.getElementById('category-title');
-    
+
     if (!container || !PRODUCTS_DB[catKey]) {
-        if(container) container.innerHTML = '<p>Category not found.</p>';
+        if (container) container.innerHTML = '<p>Category not found.</p>';
         return;
     }
 
@@ -282,14 +316,16 @@ function renderCategoryPage(catKey) {
 
     const products = PRODUCTS_DB[catKey];
     container.innerHTML = products.map(prod => `
-        <div class="glass-panel" style="padding: 1rem; display: flex; flex-direction: column; align-items: center; text-align: center;">
+        <div class="glass-panel" style="padding: 1rem; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer;"
+             onclick="window.location.href='product.html?id=${prod.id}'">
             <img src="${getImageUrl(prod.id)}" alt="${prod.name}" style="width: 150px; height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
             <h4 style="margin: 0.5rem 0; font-size: 1.1rem;">${prod.name}</h4>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">${prod.author}</p>
             <p style="color: var(--primary); font-weight: bold; margin-bottom: 1rem;">$${prod.price.toFixed(2)}</p>
-            <div style="margin-top: auto; display: flex; gap: 0.5rem;">
+            <div style="margin-top: auto; display: flex; gap: 0.5rem;" onclick="event.stopPropagation()">
                 <button onclick="window.location.href='product.html?id=${prod.id}'" class="glass-button secondary" style="padding: 8px 12px; font-size: 0.8rem;">View</button>
                 <button onclick="AppState.addToCart(PRODUCTS_DB['${catKey}'].find(p => p.id === '${prod.id}'))" class="glass-button" style="padding: 8px 12px; font-size: 0.8rem;">Add</button>
+                <button onclick="AppState.addToWishlist(PRODUCTS_DB['${catKey}'].find(p => p.id === '${prod.id}'))" class="glass-button secondary" style="padding: 8px 12px; font-size: 0.8rem;">♥</button>
             </div>
         </div>
     `).join('');
@@ -297,7 +333,7 @@ function renderCategoryPage(catKey) {
 
 function renderProductPage(prodId) {
     // Find product
-    let product = null; 
+    let product = null;
     let category = null;
     for (const [cat, items] of Object.entries(PRODUCTS_DB)) {
         const found = items.find(p => p.id === prodId);
@@ -312,12 +348,26 @@ function renderProductPage(prodId) {
     document.getElementById('product-author').innerText = `By ${product.author}`;
     document.getElementById('product-price').innerText = `$${product.price.toFixed(2)}`;
     document.getElementById('product-desc').innerText = product.description;
-    
+
     // Bind buttons - finding the exact object again to pass to methods to ensure no reference issues
     const getProductRef = () => PRODUCTS_DB[category].find(p => p.id === prodId);
-    
+
     document.getElementById('btn-add-cart').onclick = () => AppState.addToCart(getProductRef());
-    document.getElementById('btn-wishlist').onclick = () => AppState.addToWishlist(getProductRef());
+
+    const wishlistBtn = document.getElementById('btn-wishlist');
+    const updateWishlistBtn = () => {
+        const isInWishlist = AppState.wishlist.some(item => item.id === prodId);
+        wishlistBtn.innerText = isInWishlist ? "In Wishlist" : "Add to Wishlist";
+        wishlistBtn.disabled = isInWishlist;
+        if (isInWishlist) wishlistBtn.classList.add('active');
+    };
+
+    updateWishlistBtn();
+
+    wishlistBtn.onclick = () => {
+        AppState.addToWishlist(getProductRef());
+        updateWishlistBtn();
+    };
 }
 
 function renderCartPage() {
@@ -347,7 +397,7 @@ function renderCartPage() {
         </div>
     `;
     }).join('');
-    
+
     totalEl.innerText = `$${total.toFixed(2)}`;
 }
 
