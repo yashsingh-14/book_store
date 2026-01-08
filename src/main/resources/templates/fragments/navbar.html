@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <nav class="navbar glass-panel" th:fragment="navbar">
+        <div class="container">
+            <a th:href="@{/}" class="brand-logo">Lumina<span style="color:#fff">Books</span>.</a>
+            <div class="nav-links">
+                <a th:href="@{/}" class="nav-item">Home</a>
+                <a th:href="@{/#categories}" class="nav-item">Categories</a>
+                <a th:href="@{/pages/wishlist.html}" class="nav-item">Wishlist</a>
+            </div>
+            <div class="nav-icons">
+                <a th:href="@{/pages/wishlist.html}" class="icon-btn">
+                    ♥ <span id="wishlist-count" class="badge">0</span>
+                </a>
+                <a th:href="@{/pages/cart.html}" class="icon-btn">
+                    🛒 <span id="cart-count" class="badge">0</span>
+                </a>
+                <a th:href="@{/pages/signin.html}" class="glass-button secondary"
+                    style="padding: 8px 16px; font-size: 0.8rem;">Sign In</a>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>

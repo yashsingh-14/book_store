@@ -20,7 +20,7 @@
 <body>
 
     <!-- Navbar -->
-    <nav th:replace="~{fragments/common :: navbar}"></nav>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
     <!-- Main Content -->
     <div layout:fragment="content">
@@ -28,7 +28,7 @@
     </div>
 
     <!-- Footer -->
-    <footer th:replace="~{fragments/common :: footer}"></footer>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
 
     <!-- Script -->
     <script th:src="@{/js/script.js}"></script>

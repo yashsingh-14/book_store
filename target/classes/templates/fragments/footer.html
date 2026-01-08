@@ -1,45 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:fragment="head">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title} + ' | LuminaBooks'">LuminaBooks</title>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap"
-        rel="stylesheet">
-
-    <!-- CSS - Use absolute path for simplicity or th:href -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-
 <body>
-
-    <nav class="navbar glass-panel" th:fragment="navbar">
-        <div class="container">
-            <a th:href="@{/}" class="brand-logo">Lumina<span style="color:#fff">Books</span>.</a>
-            <div class="nav-links">
-                <a th:href="@{/}" class="nav-item">Home</a>
-                <a th:href="@{/#categories}" class="nav-item">Categories</a>
-                <a th:href="@{/pages/wishlist.html}" class="nav-item">Wishlist</a>
-            </div>
-            <div class="nav-icons">
-                <a th:href="@{/pages/wishlist.html}" class="icon-btn">
-                    ♥ <span id="wishlist-count" class="badge">0</span>
-                </a>
-                <a th:href="@{/pages/cart.html}" class="icon-btn">
-                    🛒 <span id="cart-count" class="badge">0</span>
-                </a>
-                <a th:href="@{/pages/signin.html}" class="glass-button secondary"
-                    style="padding: 8px 16px; font-size: 0.8rem;">Sign In</a>
-            </div>
-        </div>
-    </nav>
-
     <footer class="footer" th:fragment="footer">
         <div class="container">
             <div class="footer-grid">
@@ -77,7 +39,6 @@
             </div>
         </div>
     </footer>
-
 </body>
 
 </html>
