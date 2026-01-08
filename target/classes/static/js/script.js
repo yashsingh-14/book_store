@@ -136,93 +136,7 @@ const getImageUrl = (id) => {
 // ==========================================
 // 3. UI INJECTION & UTILS
 // ==========================================
-function getPathPrefix() {
-    // Check if we are in the root or a subfolder
-    const path = window.location.pathname;
-    // Simple check: if ends with / or index.html, we are root. Else if we are in pages/, we are 1 level deep.
-    return path.includes('/pages/') ? '../' : './';
-}
 
-function injectNavbar() {
-    const prefix = getPathPrefix();
-    const navbarHTML = `
-        <div class="container">
-            <a href="${prefix}index.html" class="brand-logo">Lumina<span style="color:#fff">Books</span>.</a>
-            <div class="nav-links">
-                <a href="${prefix}index.html" class="nav-item">Home</a>
-                <a href="${prefix}index.html#categories" class="nav-item">Categories</a>
-                <a href="${prefix}pages/wishlist.html" class="nav-item">Wishlist</a>
-            </div>
-            <div class="nav-icons">
-                <a href="${prefix}pages/wishlist.html" class="icon-btn">
-                    ♥ <span id="wishlist-count" class="badge">0</span>
-                </a>
-                <a href="${prefix}pages/cart.html" class="icon-btn">
-                    🛒 <span id="cart-count" class="badge">0</span>
-                </a>
-                <a href="${prefix}pages/signin.html" class="glass-button secondary" style="padding: 8px 16px; font-size: 0.8rem;">Sign In</a>
-            </div>
-        </div>
-    `;
-    const navElement = document.createElement('nav');
-    navElement.className = 'navbar glass-panel';
-    // Remove existing navbar if any to prevent duplicates on re-injection
-    const existingNav = document.querySelector('.navbar');
-    if (existingNav) existingNav.remove();
-
-    document.body.prepend(navElement);
-    navElement.innerHTML = navbarHTML;
-
-    updateCounters();
-}
-
-function injectFooter() {
-    const prefix = getPathPrefix();
-    const footerHTML = `
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>LuminaBooks</h4>
-                    <p style="color: var(--text-muted);">Curating the finest literature for the discerning reader.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="${prefix}index.html">Home</a></li>
-                        <li><a href="${prefix}pages/cart.html">My Cart</a></li>
-                        <li><a href="${prefix}pages/wishlist.html">Wishlist</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Help</h4>
-                    <ul>
-                        <li><a href="#">Shipping</a></li>
-                        <li><a href="#">Returns</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Newsletter</h4>
-                   <div style="display: flex; gap: 0.5rem;">
-                        <input type="email" placeholder="Email" style="padding: 8px; border-radius: 4px; border:none; width: 100%;">
-                        <button class="glass-button" style="padding: 8px 12px;">→</button>
-                   </div>
-                </div>
-            </div>
-            <div class="copyright">
-                © 2025 LuminaBooks. All rights reserved.
-            </div>
-        </div>
-    `;
-    const footerElement = document.createElement('footer');
-    footerElement.className = 'footer';
-    // Remove existing footer if any
-    const existingFooter = document.querySelector('.footer');
-    if (existingFooter) existingFooter.remove();
-
-    footerElement.innerHTML = footerHTML;
-    document.body.appendChild(footerElement);
-}
 
 function updateCounters() {
     const cartCount = document.getElementById('cart-count');
@@ -252,28 +166,28 @@ function showNotification(msg) {
 // 4. INIT & DISPATCHER
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    injectNavbar();
+    // Navbar and Footer are now server-side rendered via Thymeleaf
 
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
 
-    if (path.endsWith('index.html') || path.endsWith('/') || path.endsWith('book_store/')) { // Handle root correctly
+    if (path.endsWith('index') || path.endsWith('/') || path.endsWith('book_store/')) { // Handle root correctly
         renderLandingPage();
-    } else if (path.includes('category.html')) {
+    } else if (path.includes('category')) {
         const catKey = params.get('c');
         if (catKey) renderCategoryPage(catKey);
-    } else if (path.includes('product.html')) {
+    } else if (path.includes('product')) {
         const prodId = params.get('id');
         if (prodId) renderProductPage(prodId);
-    } else if (path.includes('cart.html')) {
+    } else if (path.includes('cart')) {
         renderCartPage();
-    } else if (path.includes('wishlist.html')) {
+    } else if (path.includes('wishlist')) {
         renderWishlistPage();
-    } else if (path.includes('checkout.html')) {
+    } else if (path.includes('checkout')) {
         // Checkout logic
     }
 
-    injectFooter();
+    updateCounters();
 });
 
 // ==========================================

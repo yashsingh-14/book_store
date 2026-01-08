@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Home</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="hero-content glass-panel">
+                <h1>Discover Your Next <br><span style="color: var(--primary);">Masterpiece</span></h1>
+                <p>Explore our curated collection of timeless classics and modern bestsellers.</p>
+                <a href="#categories" class="glass-button">Shop Now</a>
+            </div>
+        </header>
+
+        <!-- Categories Section -->
+        <section id="categories" class="categories-section container">
+            <h2 class="section-title">Browse Categories</h2>
+            <div id="categories-grid" class="grid-container">
+                <!-- Categories injected by JS -->
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

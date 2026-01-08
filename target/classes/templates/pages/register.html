@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Register</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+            <div class="glass-panel" style="padding: 3rem; width: 100%; max-width: 400px; text-align: center;">
+                <h1 class="section-title" style="margin-bottom: 2rem;">Register</h1>
+
+                <form style="display: grid; gap: 1rem;">
+                    <input type="text" placeholder="Full Name" class="form-input" required>
+                    <input type="email" placeholder="Email Address" class="form-input" required>
+                    <input type="password" placeholder="Password" class="form-input" required>
+                    <input type="password" placeholder="Confirm Password" class="form-input" required>
+                    <button type="submit" class="glass-button" style="margin-top: 1rem;">Register</button>
+                </form>
+
+                <p style="margin-top: 2rem; color: var(--text-muted);">
+                    Already have an account? <a href="signin.html" style="color: var(--primary);">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

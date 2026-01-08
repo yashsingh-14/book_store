@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Checkout</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container" style="margin-top: 2rem;">
+            <h1 class="section-title">Checkout</h1>
+            <div class="checkout-layout grid-container" style="grid-template-columns: 2fr 1fr;">
+                <!-- Checkout Form -->
+                <div class="glass-panel" style="padding: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">Shipping Details</h3>
+                    <form id="checkout-form" style="display: grid; gap: 1rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <input type="text" placeholder="First Name" class="form-input" required>
+                            <input type="text" placeholder="Last Name" class="form-input" required>
+                        </div>
+                        <input type="email" placeholder="Email Address" class="form-input" required>
+                        <input type="text" placeholder="Address" class="form-input" required>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <input type="text" placeholder="City" class="form-input" required>
+                            <input type="text" placeholder="Postal Code" class="form-input" required>
+                        </div>
+
+                        <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Payment Information</h3>
+                        <input type="text" placeholder="Card Number" class="form-input" required>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <input type="text" placeholder="MM/YY" class="form-input" required>
+                            <input type="text" placeholder="CVC" class="form-input" required>
+                        </div>
+
+                        <button type="submit" class="glass-button" style="margin-top: 1rem;">Place Order</button>
+                    </form>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="glass-panel" style="padding: 2rem; height: fit-content;">
+                    <h3 style="margin-bottom: 1.5rem;">Order Summary</h3>
+                    <div id="checkout-summary">
+                        <!-- Injected by JS -->
+                        <p>Loading summary...</p>
+                    </div>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 1rem 0;">
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem;">
+                        <span>Total</span>
+                        <span id="checkout-total">$0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+        <script>
+            // Simple inline script for checkout specific logic to populate summary from local storage interactively
+            document.addEventListener('DOMContentLoaded', () => {
+                const cart = JSON.parse(localStorage.getItem('bookStore_cart')) || [];
+                const summaryDiv = document.getElementById('checkout-summary');
+                const totalEl = document.getElementById('checkout-total');
+
+                if (cart.length === 0) {
+                    summaryDiv.innerHTML = '<p>Your cart is empty.</p>';
+                } else {
+                    let total = 0;
+                    summaryDiv.innerHTML = cart.map(item => {
+                        total += item.price * item.quantity;
+                        return `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                <span>${item.name} x ${item.quantity}</span>
+                                <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                        `;
+                    }).join('');
+                    totalEl.innerText = `$${total.toFixed(2)}`;
+                }
+
+                document.getElementById('checkout-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    alert('Thank you for your order! This is a demo.');
+                    localStorage.removeItem('bookStore_cart');
+                    window.location.href = '../index.html';
+                });
+            });
+        </script>
+    </th:block>
+</body>
+
+</html>

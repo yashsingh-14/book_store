@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Product Details</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container" style="margin-top: 2rem; min-height: 80vh;">
+            <!-- Back Button -->
+            <a href="javascript:history.back()" style="color: var(--text-muted); text-decoration: none;">← Back</a>
+
+            <div class="product-detail-layout glass-panel"
+                style="margin-top: 1rem; display: flex; gap: 2rem; padding: 2rem;">
+                <div style="flex: 1;">
+                    <img id="product-img" src="" alt="Book Cover"
+                        style="width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                </div>
+                <div style="flex: 2;">
+                    <h1 id="product-title" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--text);">
+                        Loading...</h1>
+                    <p id="product-author" style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem;"></p>
+                    <p id="product-price" style="font-size: 2rem; font-weight: bold; margin-bottom: 1.5rem;">$0.00</p>
+
+                    <p id="product-desc" style="color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem;"></p>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button id="btn-add-cart" class="glass-button"
+                            style="padding: 12px 24px; font-size: 1.1rem;">Add to Cart</button>
+                        <button id="btn-wishlist" class="glass-button secondary"
+                            style="padding: 12px 24px; font-size: 1.1rem;">Add to Wishlist</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
